@@ -33,16 +33,26 @@
 <label for="externalObjectId">ObjectId</label><br/>
     <input type="text" readonly="readonly" value="" id="externalObjectId"/><br/>
 <script type="text/javascript">
-    window.addEventListener("message", messageReciever2, false);
+    // Create IE + others compatible event handler
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
 
-    function messageReciever2(event) {
-        if (event.origin !== "http://localhost:18546")
-            return;
+    // Listen to message from child window
+    eventer(messageEvent,
+        function(event) {
+            if (event.origin !== "http://localhost:18546")
+                return;
 
-        //console.log("External recieved \"" + event.data + "\"");
+            $("#externalObjectId").val(event.data);
+        });
 
-        $("#externalObjectId").val(event.data);
-    }
+    //window.addEventListener("message", messageReciever2, false);
+    //function messageReciever2(event) {
+    //  if (event.origin !== "http://localhost:18546")
+    //    return;
+    //  $("#externalObjectId").val(event.data);
+    //}
 
     var objlist = $("#objectlist li a");
     objlist.on("click",
