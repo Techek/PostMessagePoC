@@ -7,21 +7,23 @@
 </head>
 <body>
 <h1>Popup Page</h1>
-    <iframe id="externalframe" src="http://localhost:18580/index.html" height="300" width="300"></iframe>
+<iframe id="externalframe" src="http://localhost:18580/index.html" height="300" width="300"></iframe>
 <script type="text/javascript">
-    // Create IE + others compatible event handler
+    // Inspired by https://davidwalsh.name/window-iframe
     var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
     var eventer = window[eventMethod];
     var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
 
-    // Listen to message from child window
-    eventer(messageEvent, function(event) {
-        if (event.origin !== "http://localhost:18580")
+    // Listen to message from iframe
+    eventer(messageEvent,
+        function(event) {
+            if (event.origin !== "http://localhost:18580")
                 return;
 
-        window.opener.setObjectId(event.data);
-        window.close();
-    }, false);
+            window.opener.setObjectId(event.data);
+            window.close();
+        },
+        false);
 
     //window.addEventListener("message", messageReciever, false);
     //function messageReciever(event) {
@@ -31,13 +33,14 @@
     //}
 
     var objectId = window.opener.getObjectId();
-    console.log("popup", objectId);
-    externalframe.onload = function () {
-        console.log("popup external onload", objectId);
-        if (externalframe.contentWindow) {
-            externalframe.contentWindow.postMessage(objectId, "http://localhost:18580");
-        } else if (window.frames['externalframe']) {
-            window.frames['externalframe'].postMessage(objectId, "http://localhost:18580");
+    externalframe.onload = function() {
+        // HTML5 browsers give access by contentWindow, IE utilize frames
+        var frame = externalframe.contentWindow || window.frames['externalframe'] || null;
+
+        if (frame != null) {
+            frame.postMessage(objectId, "http://localhost:18580");
+        } else {
+            alert("Cannot find iframe-window to postMessage to");
         }
     };
 </script>

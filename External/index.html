@@ -31,14 +31,15 @@
     </li>
 </ul>
 <label for="externalObjectId">ObjectId</label><br/>
-    <input type="text" readonly="readonly" value="" id="externalObjectId"/><br/>
+<input type="text" readonly="readonly" value="" id="externalObjectId"/><br/>
+
 <script type="text/javascript">
-    // Create IE + others compatible event handler
+    // Inspired by https://davidwalsh.name/window-iframe
     var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
     var eventer = window[eventMethod];
     var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
 
-    // Listen to message from child window
+    // Listen to message from parent window
     eventer(messageEvent,
         function(event) {
             if (event.origin !== "http://localhost:18546")
@@ -56,8 +57,7 @@
 
     var objlist = $("#objectlist li a");
     objlist.on("click",
-        function (e) {
-            //console.log("External Page sending \"" + this.text + "\"");
+        function(e) {
             window.parent.postMessage(this.text, "http://localhost:18546");
         });
 </script>
