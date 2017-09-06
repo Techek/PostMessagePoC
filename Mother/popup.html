@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title></title>
+    <script src="Scripts/jquery-3.1.1.js"></script>
+</head>
+<body>
+<h1>Popup Page</h1>
+    <iframe id="externalframe" src="http://localhost:18580/index.html" height="300" width="300"></iframe>
+<script type="text/javascript">
+    window.addEventListener("message", messageReciever, false);
+
+    function messageReciever(event) {
+        if (event.origin !== "http://localhost:18580")
+            return;
+
+        //console.log("Popup recieved \"" + event.data + "\"");
+
+        window.opener.setObjectId(event.data);
+    }
+
+    var objectId = window.opener.getObjectId();
+    externalframe.onload = function() {
+        externalframe.contentWindow.postMessage(objectId, "http://localhost:18580");
+    };
+</script>
+</body>
+</html>
