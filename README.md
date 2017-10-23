@@ -1,5 +1,13 @@
 # PostMessagePoC
 postMessage between mother-site with popup-window and iframe'd external site
 
-Hosted in two Visual Studio projects (which really isn't necessary) ready to be run simultaneously.
-Uses jQuery (via NuGet) for a lot easier access to DOM-elements - could be refactored to vanilla JS
+How to use
+1) Install node
+2) Run "npm install http-server -g"
+3) Start commandprompt (Node)
+4) http-server "<gitpath>\Mother" -p18546 -i
+
+5) Start another commandprompt (Node)
+6) http-server "<gitpath>\External" -p18580 -i
+
+7) Browse http://localhost:18546/
